@@ -11,12 +11,6 @@ insert the desired chain ID, which I got from https://api.coingecko.com/api/v3/a
 stored in 'available_chains_ids' for reference. Almost all of them are available, but 3 doesn't have IDs 
 (Immutable, Matrix, and Picasso), so we can't get historical price data from tokens on these chains.
 
-- In TOKEN_CONTRACT_ADDRESS we can insert any available token contract address indexed by Coingecko, available in 
-that chain. More on why I decided to focus on token address instead of token id or token name below.
-
-- In DAYS, we state that we should get data up to that number of days ago (I'm getting MAX). Also, since
-we are using the free plan, our MAX will return daily prices. Better plans would bring more granular data.
-
 - Function 'is_token_indexed' is important because, as we know, not all tokens are indexed by Coingecko APIs. Here, we check the coins list from CoinGecko and check if our token_contract_address appears in that list. I decided to focus on token_contract_address instead of token_id or token_name because tokens can have the same name
 and token_id is something created for the CoinGecko API, on the other hand, token contract address is an
 universal variable we can check in several different platforms.

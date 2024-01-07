@@ -3,17 +3,26 @@ import requests
 import psycopg2
 from ratelimit import rate_limited
 
+"""The chain the token is running (available from https://api.coingecko.com/api/v3/asset_platforms and stored in 
+'available_chains_ids' for reference"""
 CHAIN_ID = "ethereum"
 
+"""we can insert any available token contract address indexed by Coingecko, available in that chain. 
+More on why I decided to focus on token address instead of token id or token name in README.md."""
 TOKEN_CONTRACT_ADDRESS = "0x6982508145454ce325ddbe47a25d4ec3d2311933" 
 
+"""The currency we want to get the prices, in our case, it's USD."""
 VS_CURRENCY = "usd"
 
+"""we state that we should get data up to that number of days ago (I'm getting MAX). 
+Also, since we are using the free plan, our MAX will return daily prices. Better plans would bring more 
+granular data."""
 DAYS = "max"
 
 """We have 30 calls per minute in the free plan / public API. Of course, in bigger plans we could adjust this."""
 RATE_LIMIT = 0.5 
 
+"""Our PSQL database configuration"""
 DB_CONFIG = {
     "dbname": "allium",
     "user": "postgres",
@@ -39,7 +48,7 @@ def is_token_indexed(token_contract_address):
         print(f"An error occurred while checking token indexing: {e}")
         return False
 
-"""Checking the result from is_token_indexed and then, based on that, retrieving the prices."""
+"""Checking the result from is_token_indexed and then, based on that, retrieving (or not) the prices."""
 @rate_limited(RATE_LIMIT)
 def fetch_token_prices(chain_id, token_contract_address, vs_currency="usd", days="max"):
     if not is_token_indexed(token_contract_address):
@@ -60,10 +69,10 @@ def process_prices_data(prices):
         timestamp, price = price_point
         iso_timestamp = datetime.utcfromtimestamp(timestamp / 1000).isoformat()
         processed_data.append((iso_timestamp, price))
-    print(processed_data)
+    # print(processed_data)
     return processed_data
 
-"""Creating the table and indexes"""
+"""Creating the table, constraints, and indexes"""
 def create_table():
     try:
         conn = psycopg2.connect(**DB_CONFIG)
@@ -73,7 +82,8 @@ def create_table():
                         token_address TEXT NOT NULL,
                         chain_ID TEXT NOT NULL,
                         price NUMERIC(28, 18) NOT NULL,
-                        timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL
+                        timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                        PRIMARY KEY (token_address, chain_ID, timestamp)
                     );
         ''')
         
