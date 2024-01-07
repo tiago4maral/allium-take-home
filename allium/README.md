@@ -31,10 +31,8 @@ a JSON with the historical price data for that token.
 Unix timestamp and the price. Then, we convert the Unix timestamps into ISO8601 format because this is closer to 
 the format you guys already use in Allium tables.
 
-- Then, in create_table, we create the table for PostgreSQL. We are storing everything into token_prices table. 
-We are adding token_address, chain_id, price - numeric format, with 18 number after decimal, and timestamp of
-that price. We also create indexes based on token_address and chain_ID (idx_token_chain), since they are always 
-together, and timestamp as well. 
+- Then, in 'create_table', we create the table for PostgreSQL. We are storing everything in token_prices table. 
+We are adding token_address, chain_id, price - numeric format, with 18 numbers after the decimal, and the timestamp of that price. We also create indexes based on token_address and chain_ID (idx_token_chain), since they are always together, and timestamp as well.
 
 ### enriched_transfers.sql
 - Here we have the DBT model, getting 'erc20_token_transfers' and 'token_prices' tables from the provided
