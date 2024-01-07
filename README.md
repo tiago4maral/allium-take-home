@@ -21,18 +21,18 @@ we are using the free plan, our MAX will return daily prices. Better plans would
 and token_id is something created for the CoinGecko API, on the other hand, token contract address is an
 universal variable we can check in several different platforms.
 
-- In function 'fetch_token_prices', we consider the answer from 'is_token_indexed'. If the token is in CoinGecko's coins list, the token prices fetcher will run normally. If it doesn't, it will return the error
+- In the function 'fetch_token_prices', we consider the answer from 'is_token_indexed'. If the token is in CoinGecko's coins list, the token prices fetcher will run normally. If it doesn't, it will return the error
 message "Token Prices for '{token_contract_address}' not indexed by CoinGecko APIs". Since we are using
 token contract address as one of our variables, instead of coin id, we are using contract market chart endpoint, 
 instead of coins/id/market_chart. Everything we need is the token contract address and the chain. This will return
 a JSON with the historical price data for that token. 
 
-- In Function 'process_prices_data', we get data from 'fetch_token_prices' and for each price point, we get the 
+- In the function 'process_prices_data', we get data from 'fetch_token_prices' and for each price point, we get the 
 Unix timestamp and the price. Then, we convert the Unix timestamps into ISO8601 format because this is closer to 
 the format you guys already use in Allium tables.
 
-- Then, in create_table, we create the table for PostgreSQL. We are storing everything into token_prices table. 
-We are adding token_address, chain_id, price - numeric format, with 18 number after decimal, and timestamp of
+- Then, in 'create_table', we create the table for PostgreSQL. We are storing everything in token_prices table. 
+We are adding token_address, chain_id, price - numeric format, with 18 numbers after the decimal, and the timestamp of
 that price. We also create indexes based on token_address and chain_ID (idx_token_chain), since they are always 
 together, and timestamp as well. 
 
