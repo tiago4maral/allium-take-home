@@ -14,7 +14,7 @@ TOKEN_CONTRACT_ADDRESS = "0x6982508145454ce325ddbe47a25d4ec3d2311933"
 """The currency we want to get the prices, in our case, it's USD."""
 VS_CURRENCY = "usd"
 
-"""we state that we should get data up to that number of days ago (I'm getting MAX). 
+"""We state that we should get data up to that number of days ago (I'm getting MAX). 
 Also, since we are using the free plan, our MAX will return daily prices. Better plans would bring more 
 granular data."""
 DAYS = "max"
