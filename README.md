@@ -1,5 +1,5 @@
 ### Project Vision and Goals
-The project aims to develop a straightforward and accurate method for fetching token prices from the CoinGecko API, storing them in an easily accessible format, and then utilizing a DBT model to integrate this information into the existing 'erc20_token_transfers' table'.
+The project aims to develop a straightforward and accurate method for fetching token prices from the CoinGecko API, storing them in an easily accessible format, and then utilizing a DBT model to integrate this information into the existing 'erc20_token_transfers' table.
 
 ### Database Setup
 - Ensure Docker is installed and running on your system.
