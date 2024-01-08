@@ -1,6 +1,7 @@
 from datetime import datetime
 import requests
 import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from ratelimit import rate_limited
 
 """The chain the token is running (available from https://api.coingecko.com/api/v3/asset_platforms and stored in 
@@ -9,7 +10,7 @@ CHAIN_ID = "ethereum"
 
 """we can insert any available token contract address indexed by Coingecko, available in that chain. 
 More on why I decided to focus on token address instead of token id or token name in README.md."""
-TOKEN_CONTRACT_ADDRESS = "0x6982508145454ce325ddbe47a25d4ec3d2311933" 
+TOKEN_CONTRACT_ADDRESS = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" 
 
 """The currency we want to get the prices, in our case, it's USD."""
 VS_CURRENCY = "usd"
@@ -24,11 +25,31 @@ RATE_LIMIT = 0.5
 
 """Our PSQL database configuration"""
 DB_CONFIG = {
-    "dbname": "allium",
     "user": "postgres",
     "password": "", 
-    "host": "localhost"
+    "host": "localhost",
+    "dbname": "postgres"
 }
+
+DB_NAME = "allium"
+
+"""Here we are creating the database so we can host the tables and test the queries as well."""
+def create_database():
+    con = psycopg2.connect(user=DB_CONFIG["user"], password=DB_CONFIG["password"], host=DB_CONFIG["host"], dbname='postgres')
+    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT) 
+
+    cursor = con.cursor()
+
+    cursor.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s", (DB_NAME,))
+    exists = cursor.fetchone()
+    if not exists:
+        cursor.execute(f"CREATE DATABASE {DB_NAME};")
+        print(f"Database '{DB_NAME}' created successfully.")
+
+    cursor.close()
+    con.close()
+
+    DB_CONFIG["dbname"] = DB_NAME
 
 """Checking if the token is indexed by CoinGecko APIs"""
 def is_token_indexed(token_contract_address):
@@ -121,6 +142,7 @@ def insert_into_database(data):
 
 if __name__ == "__main__":
     try:
+        create_database()
         create_table()
         is_token_indexed(TOKEN_CONTRACT_ADDRESS)
         prices = fetch_token_prices(CHAIN_ID, TOKEN_CONTRACT_ADDRESS, VS_CURRENCY, DAYS)
