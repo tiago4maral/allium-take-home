@@ -20,6 +20,8 @@ prices AS (
         {{ source('source', 'token_prices') }}
 ),
 
+/* We are getting the closest price for each token transfer at or before the time of the transfer. */
+
 enriched_transfers AS (
     SELECT
         t.*,
@@ -41,3 +43,4 @@ enriched_transfers AS (
 )
 
 SELECT * FROM enriched_transfers
+
