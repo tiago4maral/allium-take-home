@@ -3,10 +3,10 @@ The project aims to develop a straightforward and accurate method for fetching t
 
 ### Database and Project Setup
 1. Ensure Docker and Git are Installed.
-2. Run: git clone https://github.com/tiago4maral/allium-take-home
-3. Run: cd allium-take-home
+2. Run: """git clone https://github.com/tiago4maral/allium-take-home"""
+3. Run: """cd allium-take-home"""
 4. Use the provided `docker-compose.yml` to set up a PostgreSQL container.
-5. Run: docker-compose up -d
+5. Run: """docker-compose up -d"""
 6. Before running the scripts, you need to install the required Python libraries we are using in the fetcher. Run: pip install -r requirements.txt
 7. Execute `python historical_price_fetcher.py` to run the price fetcher, create the table and store it in 
 the database. 
